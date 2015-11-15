@@ -1,0 +1,44 @@
+# upnrun
+
+params (proj_name, ruby_ver, thin/puma, path)
+
+## file structure
+
+### config > puma.rb
+workers Integer(ENV['WEB_CONCURRENCY'] || 2)
+threads_count = Integer(ENV['MAX_THREADS'] || 5)
+threads threads_count, threads_count
+
+preload_app!
+
+rackup  DefaultRackup
+port  ENV['PORT'] ||  3000
+environment ENV['RACK_ENV'] || 'development'
+
+on_worker_boot do
+
+end
+
+# controllers > application_controller [x]
+class ApplicationController < Sinatra::Base
+  get '/' do
+    'You are up and running'
+  end
+end
+
+# config.ru [x]
+run ApplicationController
+
+# Gemfile
+source 'http://rubygems.org'
+ruby '2.2.1'
+
+gem 'sinatra'
+gem 'thin'
+gem 'json'
+
+# Procfile [x]
+web: bundle exec puma -C config/puma.rb
+
+# README.md [x]
+Basic web service by upnrun
